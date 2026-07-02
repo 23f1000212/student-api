@@ -23,22 +23,25 @@ SI6iyrYbKR0NEBSqq4XkadEjsCs4F1RncsS4LlgniT7GlkL9Mce3b0wGLs9/7ZIX
 dQIDAQAB
 -----END PUBLIC KEY-----"""
 
-app=FastAPI()
-
-app.add_middleware(CORSMiddleware,
- allow_origins=[ALLOWED_ORIGIN],
- allow_methods=["*"],
- allow_headers=["*"],
- allow_credentials=False)
+app = FastAPI()
 
 class MW(BaseHTTPMiddleware):
-    async def dispatch(self,request,call_next):
-        s=time.perf_counter()
-        r=await call_next(request)
-        r.headers["X-Request-ID"]=str(uuid.uuid4())
-        r.headers["X-Process-Time"]=f"{time.perf_counter()-s:.6f}"
+    async def dispatch(self, request, call_next):
+        s = time.perf_counter()
+        r = await call_next(request)
+        r.headers["X-Request-ID"] = str(uuid.uuid4())
+        r.headers["X-Process-Time"] = f"{time.perf_counter()-s:.6f}"
         return r
+
 app.add_middleware(MW)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://dash-cs5l60.example.com"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def root():
