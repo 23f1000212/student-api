@@ -37,10 +37,13 @@ app.add_middleware(MW)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://dash-cs5l60.example.com"],
+    allow_origins=[
+        "https://dash-cs5l60.example.com"
+    ],
     allow_credentials=False,
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["X-Request-ID", "X-Process-Time"],
 )
 
 @app.get("/")
